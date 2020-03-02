@@ -15,16 +15,22 @@ function init() {
   global.lastChanged = null;
   global.lastGen = null;
   global.editor = ace.edit("editor");
+  global.inputParser = require("./input_parser");
   
-  configureEditor();
+  let classes = require("./classes");
+  global.Frame = classes.Frame;
+  global.Storyboard = classes.Storyboard;
+  
   configurePdfMake();
+  configureEditor();
+  processData();
 }
 
 function configurePdfMake() {
   pdfMake.vfs = require("./vfs_fonts").pdfMake.vfs;
   pdfMake.fonts = {
     Roboto: {
-            normal: 'Roboto-Regular.ttf'
+      normal: 'Roboto-Regular.ttf'
     }
   };
 }
@@ -43,11 +49,22 @@ function configureEditor() {
     localStorage.lastStoryboard = editor.getSession().getValue();
 
     timer = setTimeout(function () {
-      if (!lastGen || lastGen < lastChanged) {
-        generatePdf();
-      };
+      processData();   
     }, 300);
   });
+}
+
+function processData() {
+  try {
+    let parsedData = inputParser.parseInput(editor.getSession().getValue());
+    console.log(parsedData);
+    if (!lastGen || lastGen < lastChanged) {
+      generatePdf();
+    };
+  } catch(err) {
+    // todo show this error in ui
+    console.table(err);
+  }
 }
 
 function generatePdf() {
