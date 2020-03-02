@@ -1,6 +1,28 @@
 $body-color: slateblue;
+$background-color: rgb(42, 42, 42);
 
 body {
+  background-color: $background-color;
   color: $body-color;
   font-family: sans-serif;
+}
+
+h1 {
+  background-color: green($color: #000000);
+}
+
+.half {
+  width: 50%
+}
+
+#editor {
+  width: 500px;
+  height: 400px;
+}
+
+.content {
+  iframe {
+    width: 500px;
+    height: 400px;
+  }
 }
