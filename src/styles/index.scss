@@ -8,21 +8,17 @@ body {
 }
 
 h1 {
+  text-align: center;
   background-color: green($color: #000000);
 }
 
-.half {
-  width: 50%
+.container {
+  width: 100%;
 }
 
-#editor {
-  width: 500px;
-  height: 400px;
-}
-
-.content {
-  iframe {
-    width: 500px;
-    height: 400px;
-  }
+#editor, #pdf-viewer {
+  float: left;
+  width: 50%;
+  height: 850px;
+  border: none
 }

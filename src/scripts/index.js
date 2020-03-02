@@ -24,7 +24,7 @@ function configurePdfMake() {
   pdfMake.vfs = require("./vfs_fonts").pdfMake.vfs;
   pdfMake.fonts = {
     Roboto: {
-            normal: 'Roboto-Regular.ttf',
+            normal: 'Roboto-Regular.ttf'
     }
   };
 }
@@ -32,7 +32,7 @@ function configurePdfMake() {
 function configureEditor() {
   let oldSession = localStorage[storageName] ? localStorage[storageName] : defaultStoryboard;
   editor.getSession().setValue(oldSession);
-  editor.getSession().setMode('ace/mode/json');
+  editor.getSession().setMode('ace/mode/javascript');
   editor.setTheme('ace/theme/monokai');
   editor.getSession().on('change', function (e) {
     if (timer) {
