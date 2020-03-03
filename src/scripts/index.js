@@ -16,6 +16,7 @@ function init() {
   global.lastGen = null;
   global.editor = ace.edit("editor");
   global.inputParser = require("./input_parser");
+  global.layoutParser = require("./layout_processor");
   
   let classes = require("./classes");
   global.Frame = classes.Frame;
@@ -57,9 +58,9 @@ function configureEditor() {
 function processData() {
   try {
     let parsedData = inputParser.parseInput(editor.getSession().getValue());
-    console.log(parsedData);
+    let docContent = layoutParser.processLayout(parsedData, "");
     if (!lastGen || lastGen < lastChanged) {
-      generatePdf();
+      generatePdf(docContent);
     };
   } catch(err) {
     // todo show this error in ui
@@ -67,12 +68,14 @@ function processData() {
   }
 }
 
-function generatePdf() {
+/**
+ * 
+ * @param {Object} docContent 
+ */
+function generatePdf(docContent) {
   lastGen = new Date();
   let content = editor.getSession().getValue();
-  const pdfDocGenerator = pdfMake.createPdf({
-    content: content,
-  });
+  const pdfDocGenerator = pdfMake.createPdf(docContent);
   pdfDocGenerator.getDataUrl((dataUrl) => {
     document.getElementById("pdf-viewer").src = dataUrl;
   });

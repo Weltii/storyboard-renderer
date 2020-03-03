@@ -22,6 +22,6 @@ Frame.prototype.getData = getData;
 Storyboard.prototype.getData = getData;
 
 function getData(key) {
-  let value = this.key[key];
+  let value = this.data[key];
   return value ? value : `${key} not found!`;
 }
