@@ -21,7 +21,9 @@ function init() {
       parent.removeChild(parent.firstChild);
     }
   };
-  
+
+  document.addEventListener("changeLayout", onLayoutChange);
+
   let classes = require("./classes");
   global.Frame = classes.Frame;
   global.Storyboard = classes.Storyboard;
@@ -54,10 +56,15 @@ function configureEditor() {
     localStorage.lastStoryboard = codeEditor.getSession().getValue();
 
     timer = setTimeout(function () {
-      uiEditor.clearLog();
-      processData();   
+      startRenderProcess();
     }, 300);
   });
+}
+
+function startRenderProcess() {
+  uiEditor.clearLog();
+  uiEditor.closeSidebar(sidebarRight);
+  processData();   
 }
 
 function processData() {
@@ -82,6 +89,11 @@ function generatePdf(docContent) {
   pdfDocGenerator.getDataUrl((dataUrl) => {
     document.getElementById("pdf-viewer").src = dataUrl;
   });
+}
+
+function onLayoutChange(event) {
+  layoutParser.setLayoutKey(event.detail.key);
+  startRenderProcess();
 }
 
 window.onload = init();

@@ -2,6 +2,7 @@ export function initEditorUi() {
   global.sidebarLeft = document.getElementById("sidebar-left");
   global.sidebarRight = document.getElementById("sidebar-right");
   global.errorLogList = document.getElementById("error-log-list");
+  global.layoutList = document.getElementById("possible-layouts-list");
 
   let sidebarLeftClose = document.getElementById("sidebar-left-close");
   let sidebarRightClose = document.getElementById("sidebar-right-close");
@@ -14,7 +15,17 @@ export function initEditorUi() {
   sidebarRightOpen.addEventListener("click", onClickCloseSidebar);
 
   clearLog();
-}
+  initLayoutsList();
+  document.addEventListener("MissingData", (event) => {
+    this.addError({
+      title: "MissingData",
+      message: event.detail.message
+    });
+    openSideBar(sidebarRight);
+  });
+};
+
+/* Sidebar */
 
 function onClickCloseSidebar(event) {
   if (event.target.id.search("left") == -1) {
@@ -48,6 +59,8 @@ export function closeSidebar(sidebar) {
   }
 }
 
+/* Error Log */
+
 export function clearLog() {
   removeChilds(errorLogList);
 }
@@ -62,5 +75,27 @@ function generateErrorLogMessage(title, message) {
   let element = document.createElement("li");
   element.classList.add("error-message");
   element.innerHTML = message;
+  return element;
+}
+
+/* Layout chooser */
+
+function initLayoutsList() {
+  for (let key in layoutParser.layouts) {
+    layoutList.appendChild(generateLayoutListItem(key));
+  }
+}
+
+function generateLayoutListItem(key) {
+  let element = document.createElement("button");
+  element.innerText = key;
+  element.classList.add("layoutItem");
+  element.addEventListener("click", () => {
+    document.dispatchEvent(new CustomEvent("changeLayout", {
+      detail: {
+        key: key
+      }
+    }));
+  });
   return element;
 }
