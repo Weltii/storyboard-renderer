@@ -12,16 +12,21 @@ function init() {
   
   global.pdfmake = require('pdfmake/build/pdfmake.js');
   global.timer = null;
-  global.lastChanged = null;
-  global.lastGen = null;
-  global.editor = ace.edit("editor");
+  global.codeEditor = ace.edit("editor");
   global.inputParser = require("./input_parser");
   global.layoutParser = require("./layout_processor");
+  global.uiEditor = require("./editor_ui");
+  global.removeChilds = function(parent) {
+    while (parent.firstChild) {
+      parent.removeChild(parent.firstChild);
+    }
+  };
   
   let classes = require("./classes");
   global.Frame = classes.Frame;
   global.Storyboard = classes.Storyboard;
   
+  uiEditor.initEditorUi();
   configurePdfMake();
   configureEditor();
   processData();
@@ -38,18 +43,18 @@ function configurePdfMake() {
 
 function configureEditor() {
   let oldSession = localStorage[storageName] ? localStorage[storageName] : defaultStoryboard;
-  editor.getSession().setValue(oldSession);
-  editor.getSession().setMode('ace/mode/javascript');
-  editor.setTheme('ace/theme/monokai');
-  editor.getSession().on('change', function (e) {
+  codeEditor.getSession().setValue(oldSession);
+  codeEditor.getSession().setMode('ace/mode/javascript');
+  codeEditor.setTheme('ace/theme/monokai');
+  codeEditor.getSession().on('change', function (e) {
     if (timer) {
       clearTimeout(timer);
     }
-    lastChanged = new Date();
 
-    localStorage.lastStoryboard = editor.getSession().getValue();
+    localStorage.lastStoryboard = codeEditor.getSession().getValue();
 
     timer = setTimeout(function () {
+      uiEditor.clearLog();
       processData();   
     }, 300);
   });
@@ -57,13 +62,13 @@ function configureEditor() {
 
 function processData() {
   try {
-    let parsedData = inputParser.parseInput(editor.getSession().getValue());
+    let parsedData = inputParser.parseInput(codeEditor.getSession().getValue());
     let docContent = layoutParser.processLayout(parsedData, "");
-    if (!lastGen || lastGen < lastChanged) {
       generatePdf(docContent);
-    };
   } catch(err) {
     // todo show this error in ui
+    uiEditor.openSideBar(sidebarRight);
+    uiEditor.addError(err);
     console.table(err);
   }
 }
@@ -73,8 +78,6 @@ function processData() {
  * @param {Object} docContent 
  */
 function generatePdf(docContent) {
-  lastGen = new Date();
-  let content = editor.getSession().getValue();
   const pdfDocGenerator = pdfMake.createPdf(docContent);
   pdfDocGenerator.getDataUrl((dataUrl) => {
     document.getElementById("pdf-viewer").src = dataUrl;

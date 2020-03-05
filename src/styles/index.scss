@@ -37,8 +37,13 @@ h1 {
   background-color: #111;
   overflow-x: hidden;
   transition: 0.5s;
-  padding: 60px 10px 0 10px;
-  
+  padding-top: 60px;
+
+  .content {
+    padding: 0 10px 0 10px;;
+    display: block;
+  }
+
   .closebtn {
     position: absolute;
     top: 0;
@@ -71,6 +76,14 @@ h1 {
       background-color: rgb(88, 88, 88);
       border: 1px solid rgb(34, 34, 34);
     }
+  }
+}
+
+.sidenav-small {
+  position: absolute;
+  top: 0;
+  button {
+    margin: 20px
   }
 }
 
