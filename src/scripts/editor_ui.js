@@ -24,6 +24,7 @@ export function initEditorUi() {
     openSideBar(sidebarRight);
   });
   initSidebarExportButton();
+  initSidebarImportButton();
 };
 
 /* Sidebar */
@@ -102,6 +103,32 @@ function generateLayoutListItem(key) {
 }
 
 /* Sidebar Import Button */
+
+function initSidebarImportButton() {
+  document.getElementById("sidebar-input-file").addEventListener("change", (event) => {
+    let files = event.target.files;
+    if (files.length > 1) {
+      console.log("too many files selected");
+      return;
+    }
+    if (files.length == 0) {
+      console.log("too less files selected");
+    }
+    let file = files[0];
+    if (file.type != "application/json") {
+      console.log("wrong file type");
+      return;
+    }
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      codeEditor.getSession().setValue(e.target.result);
+    };
+    reader.readAsText(file);
+  });
+}
+
+/* Save working file */
+
 /* Sidebar Export Button */
 
 function initSidebarExportButton() {
