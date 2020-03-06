@@ -1,4 +1,4 @@
-let chosenLayoutKey = "siddmple";
+let chosenLayoutKey = "simple";
 
 export const layouts = {
   simple: require("./layouts/simpleLayout.js")

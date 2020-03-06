@@ -23,6 +23,7 @@ export function initEditorUi() {
     });
     openSideBar(sidebarRight);
   });
+  initSidebarExportButton();
 };
 
 /* Sidebar */
@@ -98,4 +99,13 @@ function generateLayoutListItem(key) {
     }));
   });
   return element;
+}
+
+/* Sidebar Import Button */
+/* Sidebar Export Button */
+
+function initSidebarExportButton() {
+  document.getElementById("sidebar-export-button").addEventListener("click", () => {
+    lastGeneratedDoc.download("GeneratedLayout.pdf");
+  });
 }

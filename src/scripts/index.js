@@ -86,6 +86,7 @@ function processData() {
  */
 function generatePdf(docContent) {
   const pdfDocGenerator = pdfMake.createPdf(docContent);
+  global.lastGeneratedDoc = pdfDocGenerator;
   pdfDocGenerator.getDataUrl((dataUrl) => {
     document.getElementById("pdf-viewer").src = dataUrl;
   });
