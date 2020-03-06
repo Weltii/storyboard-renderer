@@ -25,6 +25,7 @@ export function initEditorUi() {
   });
   initSidebarExportButton();
   initSidebarImportButton();
+  initSidebarSaveWorkingFile();
 };
 
 /* Sidebar */
@@ -128,6 +129,19 @@ function initSidebarImportButton() {
 }
 
 /* Save working file */
+
+function initSidebarSaveWorkingFile() {
+  document.getElementById("sidebar-save-button").addEventListener("click", () => {
+    let text = codeEditor.getSession().getValue();
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', "storyboard_file.json");
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  });
+}
 
 /* Sidebar Export Button */
 
