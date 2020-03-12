@@ -1,152 +1,161 @@
-export function initEditorUi() {
-  global.sidebarLeft = document.getElementById("sidebar-left");
-  global.sidebarRight = document.getElementById("sidebar-right");
-  global.errorLogList = document.getElementById("error-log-list");
-  global.layoutList = document.getElementById("possible-layouts-list");
+import * as io from "./io";
+import { removeChilds } from './util';
+import { EditorBridge } from './editorBridge';
+import { MakePdfBridge } from './makePdfBridge';
+import { InputParser } from './input_parser';
+import { LayoutProcessor} from './layout_processor';
 
-  let sidebarLeftClose = document.getElementById("sidebar-left-close");
-  let sidebarRightClose = document.getElementById("sidebar-right-close");
-  let sidebarLeftOpen = document.getElementById("sidebar-left-open");
-  let sidebarRightOpen = document.getElementById("sidebar-right-open");
-  
-  sidebarLeftClose.addEventListener("click", onClickCloseSidebar);
-  sidebarRightClose.addEventListener("click", onClickCloseSidebar);
-  sidebarLeftOpen.addEventListener("click", onClickCloseSidebar);
-  sidebarRightOpen.addEventListener("click", onClickCloseSidebar);
+export class EditorUi {
+  constructor() {
+    this.layoutProcessor = new LayoutProcessor();
+    this.inputParser = new InputParser();
+    this.editorBridge = new EditorBridge(this.inputParser);
+    this.makePdfBridge = new MakePdfBridge(this.layoutProcessor);
+    
+    this.sidebarLeft = document.getElementById("sidebar-left");
+    this.sidebarRight = document.getElementById("sidebar-right");
+    this.errorLogList = document.getElementById("error-log-list");
+    this.layoutList = document.getElementById("possible-layouts-list");
 
-  clearLog();
-  initLayoutsList();
-  document.addEventListener("MissingData", (event) => {
+    document.getElementById("sidebar-left-close").addEventListener("click", this.onClickCloseSidebar.bind(this));
+    document.getElementById("sidebar-right-close").addEventListener("click", this.onClickCloseSidebar.bind(this));
+    document.getElementById("sidebar-left-open").addEventListener("click", this.onClickCloseSidebar.bind(this));
+    document.getElementById("sidebar-right-open").addEventListener("click", this.onClickCloseSidebar.bind(this));
+    document.addEventListener("ErrorReceive", this.onErrorReceive.bind(this));
+    document.addEventListener("ClearLog", this.onClearLog.bind(this));
+
+    this.clearLog();
+    this.initLayoutsList();
+    this.initSidebarExportButton();
+    this.initSidebarImportButton();
+    this.initSidebarSaveWorkingFile();
+  }
+
+  onClearLog() {
+    this.clearLog();
+    this.closeSidebar(this.sidebarRight);
+  }
+
+  onErrorReceive(event) {
     this.addError({
-      title: "MissingData",
+      title: event.detail.title,
       message: event.detail.message
     });
-    openSideBar(sidebarRight);
-  });
-  initSidebarExportButton();
-  initSidebarImportButton();
-  initSidebarSaveWorkingFile();
-};
-
-/* Sidebar */
-
-function onClickCloseSidebar(event) {
-  if (event.target.id.search("left") == -1) {
-    toggleSidebar(sidebarRight);
+    this.openSideBar(this.sidebarRight);
   }
-  else {
-    toggleSidebar(sidebarLeft);
-  }
-}
 
-function toggleSidebar(sidebar) {
-  if (sidebar && sidebar.style) { 
-    if (sidebar.style.width == "0px") {
-      openSideBar(sidebar);
+  /* Sidebar */
+
+  onClickCloseSidebar(event) {
+    if (event.target.id.search("left") == -1) {
+      this.toggleSidebar(this.sidebarRight);
     }
     else {
-      closeSidebar(sidebar);
+      this.toggleSidebar(this.sidebarLeft);
     }
   }
-}
 
-export function openSideBar(sidebar) {
-  if (sidebar && sidebar.style) { 
-    sidebar.style.width = "350px";
-  }
-}
-
-export function closeSidebar(sidebar) {
-  if (sidebar && sidebar.style) { 
-    sidebar.style.width = "0px";
-  }
-}
-
-/* Error Log */
-
-export function clearLog() {
-  removeChilds(errorLogList);
-}
-
-export function addError(error) {
-  let title = error.title;
-  let message = error.message;
-  errorLogList.appendChild(generateErrorLogMessage(title, message));
-}
-
-function generateErrorLogMessage(title, message) {
-  let element = document.createElement("li");
-  element.classList.add("error-message");
-  element.innerHTML = message;
-  return element;
-}
-
-/* Layout chooser */
-
-function initLayoutsList() {
-  for (let key in layoutParser.layouts) {
-    layoutList.appendChild(generateLayoutListItem(key));
-  }
-}
-
-function generateLayoutListItem(key) {
-  let element = document.createElement("button");
-  element.innerText = key;
-  element.classList.add("layoutItem");
-  element.addEventListener("click", () => {
-    document.dispatchEvent(new CustomEvent("changeLayout", {
-      detail: {
-        key: key
+  toggleSidebar(sidebar) {
+    if (sidebar && sidebar.style) { 
+      if (sidebar.style.width == "0px") {
+        this.openSideBar(sidebar);
       }
-    }));
-  });
-  return element;
-}
-
-/* Sidebar Import Button */
-
-function initSidebarImportButton() {
-  document.getElementById("sidebar-input-file").addEventListener("change", (event) => {
-    let files = event.target.files;
-    if (files.length > 1) {
-      console.log("too many files selected");
-      return;
+      else {
+        this.closeSidebar(sidebar);
+      }
     }
-    if (files.length == 0) {
-      console.log("too less files selected");
+  }
+
+  openSideBar(sidebar) {
+    if (sidebar && sidebar.style) { 
+      sidebar.style.width = "350px";
     }
-    let file = files[0];
-    if (file.type != "application/json") {
-      console.log("wrong file type");
-      return;
+  }
+
+  closeSidebar(sidebar) {
+    if (sidebar && sidebar.style) { 
+      sidebar.style.width = "0px";
     }
-    var reader = new FileReader();
-    reader.onload = function(e) {
-      codeEditor.getSession().setValue(e.target.result);
-    };
-    reader.readAsText(file);
-  });
-}
+  }
 
-/* Save working file */
 
-function initSidebarSaveWorkingFile() {
-  document.getElementById("sidebar-save-button").addEventListener("click", () => {
-    let text = codeEditor.getSession().getValue();
-    var element = document.createElement('a');
-    element.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(text));
-    element.setAttribute('download', "storyboard_file.json");
-    element.style.display = 'none';
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-  });
-}
+  /* Error Log */
 
-/* Sidebar Export Button */
+  clearLog() {
+    removeChilds(this.errorLogList);
+  }
 
-function initSidebarExportButton() {
-  document.getElementById("sidebar-export-button").addEventListener("click", () => {
-    lastGeneratedDoc.download("GeneratedLayout.pdf");
-  });
+  addError(error) {
+    let title = error.title;
+    let message = error.message;
+    this.errorLogList.appendChild(this.generateErrorLogMessage(title, message));
+  };
+  
+  generateErrorLogMessage(title, message) {
+    let element = document.createElement("li");
+    element.classList.add("error-message");
+    element.innerHTML = message;
+    return element;
+  };
+
+
+  /* Layout chooser */
+
+  initLayoutsList() {
+    for (let key in this.layoutProcessor.layouts) {
+      this.layoutList.appendChild(this.generateLayoutListItem(key));
+    }
+  };
+
+  generateLayoutListItem(key) {
+    let element = document.createElement("button");
+    element.innerText = key;
+    element.classList.add("layoutItem");
+    element.addEventListener("click", () => {
+      document.dispatchEvent(new CustomEvent("changeLayout", {
+        detail: {
+          key: key
+        }
+      }));
+    });
+    return element;
+  };
+
+
+  /* Sidebar Import Button */
+
+  initSidebarImportButton() {
+    document.getElementById("sidebar-input-file").addEventListener("change", (event) => {
+      let files = event.target.files;
+      if (files.length > 1) {
+        console.log("too many files selected");
+        return;
+      }
+      if (files.length == 0) {
+        console.log("too less files selected");
+      }
+      let file = files[0];
+      io.loadWorkingFile(file, (parsedText) => {
+        this.editorBridge.setData(parsedText);
+      });
+    });
+  };
+
+
+  /* Save working file */
+  
+  initSidebarSaveWorkingFile() {
+    document.getElementById("sidebar-save-button").addEventListener("click", () => {
+      document.dispatchEvent(new CustomEvent("saveWork"));
+    });
+  };
+
+
+  /* Sidebar Export Button */
+
+  initSidebarExportButton() {
+    document.getElementById("sidebar-export-button").addEventListener("click", () => {
+      lastGeneratedDoc.download("GeneratedLayout.pdf");
+    });
+  }
 }
