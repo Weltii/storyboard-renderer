@@ -12,7 +12,7 @@ export class EditorBridge {
     this.prototype.setTheme("ace/theme/monokai");
     let startContent = localStorage.lastStoryboard ? localStorage.lastStoryboard : JSON.stringify({
       data: {
-        project_title: "Initial Data"
+        project_name: "Initial Data"
       },
       frames: []
     }, "\t");
