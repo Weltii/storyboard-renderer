@@ -12,6 +12,7 @@ export class InputParser {
   parseInput(input) {
     this.dataIsValid = true;
     let rawData;
+    let frames = [];
     try {
       rawData = JSON.parse(input);
     }
@@ -34,6 +35,33 @@ export class InputParser {
       this.throwWrongData("data", "Storyboard");
     }
 
+    if (this.isFramesValid(rawData)) {
+      for (let rawFrame of rawData["frames"]) {
+        frames.push(new Frame(rawFrame.image, rawFrame.data));
+      }
+    }   
+
+    if (this.isDataValid(rawData, "images", "object", false)) {
+      let images = rawData["images"];
+      for (let key in images) {
+        if (!this.isDataValid(images, key, "string") || key[0] == "$") {
+          this.throwWrongData(key, "Images");
+        }
+      }
+    } else {
+      this.throwWrongData("images", "Storyboard");
+    }
+
+    if (!this.dataIsValid) {
+      throw {
+        title: "Storyboard is incorrect",
+        message: "The Storyboard file has incorrect data, please check the error log and try it again."
+      };
+    }
+    return new Storyboard(rawData["data"], frames, rawData["images"]);
+  };
+
+  isFramesValid(rawData) {
     if (this.isDataValid(rawData, "frames", "object", false)) {
       for (let rawFrame of rawData["frames"]) {
         if (!this.isDataValid(rawFrame, "image", "string")) {
@@ -54,26 +82,8 @@ export class InputParser {
     } else {
       this.throwWrongData("frames", "Storyboard");
     };
-
-    if (this.isDataValid(rawData, "images", "object", false)) {
-      let images = rawData["images"];
-      for (let key in images) {
-        if (!this.isDataValid(images, key, "string")) {
-          this.throwWrongData(key, "Images");
-        }
-      }
-    } else {
-      this.throwWrongData("images", "Storyboard");
-    }
-
-    if (!this.dataIsValid) {
-      throw {
-        title: "Storyboard is incorrect",
-        message: "The Storyboard file has incorrect data, please check the error log and try it again."
-      };
-    }
-    return new Storyboard(rawData["data"], rawData["frames"], rawData["images"]);
-  };
+    return true;
+  }
 
   /**
    * Checks if the data has a value for the key
@@ -96,7 +106,7 @@ export class InputParser {
     this.dataIsValid = false;
     throw {
       title: "Missing or incorrect Data",
-      message: `${location} '${key}' is missing, has the wrong type, or is empty! Please change this and try it again.`
+      message: `${location} '${key}' is missing, has the wrong type, began with an '$', or is empty! Please change this and try it again.`
     };
   };
 };

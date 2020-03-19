@@ -77,7 +77,7 @@ function convertFrame(frame, addPageBreak) {
       {
         width: columneWidth,
         fit: imageFit,
-        image: frame.image
+        image: frame.getImage()
       },
       {
         width: "*",
