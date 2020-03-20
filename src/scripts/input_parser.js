@@ -1,64 +1,54 @@
-import {Storyboard, Frame} from './classes';
+/**
+ * 
+ * @param {string} input 
+ */
+export function parseInput(input) {
+  let rawData = JSON.parse(input);
+  let data = {};
+  let frames = [];
 
-export function InputParser() {
-  /**
-   * Parse the specified input into an Storyboard.
-   * If smth. went wrong, the method will throw errors.
-   * @param {String} inpit
-   */
-  this.parseInput = function (input) {
-    let rawData;
-    try {
-      rawData = JSON.parse(input);
+  if (rawData["data"] && typeof rawData["data"] == "object") {
+    for (let key in rawData["data"]) {
+      data[key] = rawData["data"][key];
     }
-    catch(e) {
-      throw {
-        title: e.title,
-        message: e.message
-      };
-    }
-    let data = {};
-    let frames = [];
-
-    if (rawData["data"] && typeof rawData["data"] == "object") {
-      for (let key in rawData["data"]) {
-        data[key] = rawData["data"][key];
+  } else {
+    throwWrongData("data");
+  }
+  if (rawData["frames"] && typeof rawData["frames"] == "object") {
+    for (let rawFrame of rawData["frames"]) {
+      let image = "";
+      let frameData = {};
+      if (rawFrame["image"] && typeof rawFrame["image"] == "string") {
+        image = rawFrame["image"];
+      } else {
+        throwWrongData("image");
       }
-    } else {
-      this.throwWrongData("data");
-    }
-    if (rawData["frames"] && typeof rawData["frames"] == "object") {
-      for (let rawFrame of rawData["frames"]) {
-        let image = "";
-        let frameData = {};
-        if (rawFrame["image"] && typeof rawFrame["image"] == "string") {
-          image = rawFrame["image"];
-        } else {
-          this.throwWrongData("image");
+      if (rawFrame["data"] && typeof rawFrame["data"] == "object") {
+        for (let key in rawFrame["data"]) {
+          frameData[key] = rawFrame["data"][key];
         }
-        if (rawFrame["data"] && typeof rawFrame["data"] == "object") {
-          for (let key in rawFrame["data"]) {
-            frameData[key] = rawFrame["data"][key];
-          }
-        } else {
-          this.throwWrongData("data");
-        }
-        frames.push(new Frame(image, frameData));
+      } else {
+        throwWrongData("data"); 
       }
-    } else {
-      this.throwWrongData("frames");
-    };
-    return new Storyboard(data, frames);
+      frames.push(new Frame(image, frameData));
+    }
+  } else {
+    throwWrongData("frames");
   };
+  this.currentStoryboard = new Storyboard(data, frames);
+  return this.currentStoryboard;
+}
 
-  /**
-   * Create an error object and throw it
-   * @param {String} key
-   */
-  this.throwWrongData = function (key) {
-    throw {
-      title: "Missing or incorrect Data",
-      message: `Data '${key}' missing, has the wrong type, or is empty!`
-    };
-  };
-};
+function throwWrongData(key) {
+  throwError(
+    "Missing or incorrect Data", 
+    `Data '${key}' missing, has the wrong type, or is empty!`
+  );
+}
+
+function throwError(name, message) {
+  throw {
+    name: name,
+    message: message
+ };
+}

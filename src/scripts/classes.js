@@ -23,12 +23,5 @@ Storyboard.prototype.getData = getData;
 
 function getData(key) {
   let value = this.data[key];
-  if (!value) {
-    document.dispatchEvent(new CustomEvent("MissingData", {
-      detail: {
-        message: `${key} cannot found in ${this.constructor.name} Data`
-      }
-    }));
-  }
   return value ? value : `${key} not found!`;
 }
