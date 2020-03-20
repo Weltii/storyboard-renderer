@@ -16,97 +16,9 @@ h1 {
   width: 100%;
 }
 
-.content {
-  clear: both;
-}
-
 #editor, #pdf-viewer {
   float: left;
   width: 50%;
   height: 850px;
   border: none
-}
-
-
-.sidenav {
-  height: 100%;
-  width: 350px;
-  position: fixed;
-  z-index: 5;
-  top: 0;
-  background-color: #111;
-  overflow-x: hidden;
-  transition: 0.5s;
-  padding-top: 60px;
-
-  .content {
-    padding: 0 10px 0 10px;;
-    display: block;
-  }
-
-  .closebtn {
-    position: absolute;
-    top: 0;
-    right: 25px;
-    font-size: 36px;
-    margin-left: 50px;
-  }
-  
-  a {
-    padding: 8px 8px 8px 32px;
-    text-decoration: none;
-    font-size: 25px;
-    color: #818181;
-    display: block;
-    transition: 0.3s;
-    &:hover {
-      color: #f1f1f1;
-    }
-  }
-
-  button {
-    clear: both;
-    width: 320px;
-    height: 35px;
-    margin: 5px;
-    background-color: rgb(128, 128, 128);
-    border: 1px solid rgb(77, 77, 77);
-    border-radius: 5px;
-    &:hover {  
-      background-color: rgb(88, 88, 88);
-      border: 1px solid rgb(34, 34, 34);
-    }
-  }
-
-  ul {
-    list-style: none;
-    padding: 0;
-  }
-}
-
-.sidenav-small {
-  position: absolute;
-  top: 0;
-  button {
-    margin: 20px
-  }
-}
-
-.sidenav-left {
-  left: 0
-}
-
-.sidenav-right {
-  right: 0;
-}
-
-.log {
-  ul {
-    list-style: none;
-    padding: 10px;
-    li {
-      color: rgb(231, 35, 35);
-      margin: 5px
-    }
-  }
 }
