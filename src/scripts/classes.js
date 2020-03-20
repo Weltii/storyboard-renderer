@@ -8,9 +8,6 @@ export class Storyboard {
   constructor(data, frames, images) {
     this.data = data;
     this.frames = frames;
-    for (let frame of frames) {
-      frame.storyboard = this;
-    }
     this.images = images;
   };
 
@@ -40,7 +37,7 @@ export class Frame {
   }
 
   getImage() {
-    return this.image[0] == "$" ? this.storyboard.getImageFromId(this.image) : this.image;
+    return this.image[0] == "$" ? null : this.image;
   }
 }
 

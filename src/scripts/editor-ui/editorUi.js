@@ -1,9 +1,10 @@
-import * as io from "./io";
-import { removeChilds } from './util';
-import { EditorBridge } from './editorBridge';
-import { MakePdfBridge } from './makePdfBridge';
-import { InputParser } from './input_parser';
-import { LayoutProcessor} from './layout_processor';
+import * as io from "../io";
+import { removeChilds } from '../util';
+import { EditorBridge } from '../editorBridge';
+import { MakePdfBridge } from '../makePdfBridge';
+import { InputParser } from '../input_parser';
+import { LayoutProcessor} from '../layout_processor';
+import { ImageUpload } from "./imageUpload";
 
 export class EditorUi {
   constructor() {
@@ -11,6 +12,8 @@ export class EditorUi {
     this.inputParser = new InputParser();
     this.editorBridge = new EditorBridge(this.inputParser);
     this.makePdfBridge = new MakePdfBridge(this.layoutProcessor);
+    this.imageUpload = new ImageUpload(this.editorBridge);
+    this.editorBridge.sendStartProcessEvent();
     
     this.sidebarLeft = document.getElementById("sidebar-left");
     this.sidebarRight = document.getElementById("sidebar-right");
@@ -29,6 +32,7 @@ export class EditorUi {
     this.initSidebarExportButton();
     this.initSidebarImportButton();
     this.initSidebarSaveWorkingFile();
+    this.openSideBar(this.sidebarLeft);
   }
 
   onClearLog() {
@@ -108,6 +112,7 @@ export class EditorUi {
   };
 
   generateLayoutListItem(key) {
+    let container = document.createElement("li");
     let element = document.createElement("button");
     element.innerText = key;
     element.classList.add("layoutItem");
@@ -118,7 +123,8 @@ export class EditorUi {
         }
       }));
     });
-    return element;
+    container.appendChild(element);
+    return container;
   };
 
 

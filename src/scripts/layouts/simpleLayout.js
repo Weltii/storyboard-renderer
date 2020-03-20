@@ -30,7 +30,7 @@ export function process(storyboard) {
         text: storyboard.getData("project_name"),
         style: "header"
       },
-      convertFrames(storyboard.frames)
+      convertFrames(storyboard)
     ],
     styles: {
       header: {
@@ -50,10 +50,11 @@ export function process(storyboard) {
  * Convert all specified frames
  * @param {[Frames]} frames 
  */
-function convertFrames(frames) {
+function convertFrames(storyboard) {
   let convertedFrames = [];
+  let frames = storyboard.frames;
   for (let i = 0; i < frames.length; i++) {
-    convertedFrames.push(convertFrame(frames[i], shouldAddPageBreak(i, frames.length - 1)));
+    convertedFrames.push(convertFrame(storyboard, frames[i], shouldAddPageBreak(i, frames.length - 1)));
   }
   return convertedFrames;
 }
@@ -71,13 +72,14 @@ function shouldAddPageBreak(counter, maxCounter) {
  * @param {Frame} frame
  * @param {boolean} addPageBreak
  */
-function convertFrame(frame, addPageBreak) {
+function convertFrame(storyboard, frame, addPageBreak) {
+  let image = frame.getImage() ? frame.getImage() : storyboard.getImageFromId(frame.image);
   return {
     columns: [
       {
         width: columneWidth,
         fit: imageFit,
-        image: frame.getImage()
+        image: image
       },
       {
         width: "*",

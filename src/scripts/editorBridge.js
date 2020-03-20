@@ -15,9 +15,8 @@ export class EditorBridge {
         project_name: "Initial Data"
       },
       frames: []
-    }, "\t");
+    }, null, "\t");
     this.prototype.getSession().setValue(startContent);
-    this.sendStartProcessEvent();
 
     this.prototype.getSession().on("change", () => {
       if (this.timer) {
@@ -42,7 +41,6 @@ export class EditorBridge {
         }
       ));
     } catch(e) {
-      console.log("error receive");
       document.dispatchEvent(new CustomEvent("ErrorReceive", {detail: e}));
     }
   };
