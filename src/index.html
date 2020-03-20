@@ -6,7 +6,40 @@
   <title>webpack starterkit</title>
 </head>
 <body>
+  <div id="sidebar-left" class="sidenav sidenav-left" style="width: 0px">
+    <div class="content">
+      <a id="sidebar-left-close" class="closebtn">&times;</a>
+      <div class="scroll-container">
+        <h1>Layouts</h1>
+        <ul id="possible-layouts-list">
+
+        </ul>
+        </div>
+        <h1>Import</h1>
+        <input id="sidebar-input-file" type="file">
+        <h1>Save working file</h1>
+        <button id="sidebar-save-button">Save working file</button>
+        <h1>Export</h1>
+        <button id="sidebar-export-button">Download, or whatever</button>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-right" class="sidenav sidenav-right log" style="width: 0px">
+    <div class="full-content">
+      <a id="sidebar-right-close"class="closebtn">&times;</a>
+      <h1>Log</h1>
+      <ul id="error-log-list">
+      </ul>
+    </div>
+  </div>
+
+  <div class="sidenav-small sidenav-left">
+    <button id="sidebar-left-open">&gt;</button id="sidebar-left-open">
+  </div>
   <h1>Storyboard Renderer</h1>
+  <div class="sidenav-small sidenav-right">
+    <button id="sidebar-right-open">&lt;</button>
+  </div>
   <div class='content'>
     <div id='editor'></div>
     <iframe id='pdf-viewer'></iframe>
