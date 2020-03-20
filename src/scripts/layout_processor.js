@@ -1,23 +1,23 @@
-import * as simple from './layouts/simpleLayout';
+import {SimpleLayout} from './layouts/simpleLayout';
 
 export class LayoutProcessor {
   constructor() {
     this.layouts = {
-      "simpleExampleLayout": simple
+      "simpleExampleLayout": SimpleLayout
     };
     this.defaultLayout = this.layouts["simpleExampleLayout"];
     document.addEventListener("changeLayout", this.onLayoutChange.bind(this));
   }
 
   processLayout(storyboard, layout = this.defaultLayout) {
-    console.log(storyboard);
     if (!layout) {
       throw {
         title: "Incorrect layout",
         message: "Something went wrong with the layout, may it's not defined!"
       };
     }
-    return layout.process(storyboard);
+    layout = new layout(storyboard);
+    return layout.process();
   };
 
   setDefaultLayout(layoutName) {

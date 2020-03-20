@@ -41,7 +41,7 @@ export class EditorBridge {
         }
       ));
     } catch(e) {
-      document.dispatchEvent(new CustomEvent("ErrorReceive", {detail: e}));
+      document.dispatchEvent(new CustomEvent("AddError", {detail: e}));
     }
   };
 

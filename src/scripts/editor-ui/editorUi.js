@@ -24,7 +24,7 @@ export class EditorUi {
     document.getElementById("sidebar-right-close").addEventListener("click", this.onClickCloseSidebar.bind(this));
     document.getElementById("sidebar-left-open").addEventListener("click", this.onClickCloseSidebar.bind(this));
     document.getElementById("sidebar-right-open").addEventListener("click", this.onClickCloseSidebar.bind(this));
-    document.addEventListener("ErrorReceive", this.onErrorReceive.bind(this));
+    document.addEventListener("AddError", this.onErrorReceive.bind(this));
     document.addEventListener("ClearLog", this.onClearLog.bind(this));
 
     this.clearLog();

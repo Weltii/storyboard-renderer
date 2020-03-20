@@ -46,7 +46,7 @@ export class ImageUpload {
       this.lastStoryboard &&
       this.lastStoryboard.images[this.inputId.value] != null
     ) {
-      document.dispatchEvent(new CustomEvent("ErrorReceive", {
+      document.dispatchEvent(new CustomEvent("AddError", {
         detail: {
           title: "Incorrect Id for the image",
           message: "The Id is already set, please choose another one!"
