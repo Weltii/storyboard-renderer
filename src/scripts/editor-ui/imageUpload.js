@@ -12,7 +12,9 @@ export class ImageUpload {
     this.inputId.addEventListener("input", this.checkId.bind(this));
     document.getElementById("image-upload-button").addEventListener("click", this.uploadImage.bind(this));
     document.addEventListener("StartRenderProcess", (event) => {
-      this.lastStoryboard = event.detail.storyboard;
+      if (event.detail && event.detail.storyboard) {
+        this.lastStoryboard = event.detail.storyboard;
+      }
     });
   }
 

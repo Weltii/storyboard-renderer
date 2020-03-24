@@ -32,7 +32,6 @@ export class EditorUi {
     this.initSidebarExportButton();
     this.initSidebarImportButton();
     this.initSidebarSaveWorkingFile();
-    this.openSideBar(this.sidebarLeft);
   }
 
   onClearLog() {

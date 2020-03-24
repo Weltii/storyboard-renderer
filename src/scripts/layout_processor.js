@@ -1,11 +1,13 @@
 import {SimpleLayout} from './layouts/simpleLayout';
+import {MovieLayout} from './layouts/movieLayout';
 
 export class LayoutProcessor {
   constructor() {
     this.layouts = {
-      "simpleExampleLayout": SimpleLayout
+      "simpleExampleLayout": SimpleLayout,
+      "movieLayout": MovieLayout
     };
-    this.defaultLayout = this.layouts["simpleExampleLayout"];
+    this.defaultLayout = this.layouts["movieLayout"];
     document.addEventListener("changeLayout", this.onLayoutChange.bind(this));
   }
 
