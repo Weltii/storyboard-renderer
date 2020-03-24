@@ -1,3 +1,5 @@
+import {shouldAddPageBreak} from './layoutUtil';
+
 export class SimpleLayout {
   constructor(storyboard) {
     // variables any layout need
@@ -14,7 +16,7 @@ export class SimpleLayout {
    * Returns the name of the layout
    */
   getName() {
-    return name;
+    return this.name;
   }
 
   /**
@@ -53,17 +55,9 @@ export class SimpleLayout {
   convertFrames(frames) {
     let convertedFrames = [];
     for (let i = 0; i < frames.length; i++) {
-      convertedFrames.push(this.convertFrame(frames[i], this.shouldAddPageBreak(i, frames.length - 1)));
+      convertedFrames.push(this.convertFrame(frames[i], shouldAddPageBreak(i, frames.length - 1)));
     }
     return convertedFrames;
-  }
-
-  /**
-   * Check if it necessary to add a pagebreak
-   * @returns {boolean}
-   */
-  shouldAddPageBreak(counter, maxCounter) {
-    return counter == 0 || counter == maxCounter ? false : (counter + 1) % this.framesPerPage == 0;
   }
 
   /**
